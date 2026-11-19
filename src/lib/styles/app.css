@@ -1,0 +1,684 @@
+:root {
+	color-scheme: dark;
+	--bg: #1e1e1e;
+	--panel-bg: #1e1e1e;
+	--sidebar-bg: #252526;
+	--border: #3c3c3c;
+	--row-border: #2d2d2d;
+	--text: #cccccc;
+	--text-dim: #9d9d9d;
+	--accent: #0e639c;
+	--accent-hover: #1177bb;
+	--tab-bg: #2d2d2d;
+	--tab-active-bg: #1e1e1e;
+	--input-bg: #3c3c3c;
+	--row-hover-bg: #2a2d2e;
+	--row-total-bg: #333333;
+	--row-missing-bg: #4b2c2c;
+	--row-partial-bg: #4b4326;
+	--row-nc-bg: #333333;
+	--row-selected-bg: #094771;
+	--log-header: #e0e0e0;
+	--log-ok: #89d185;
+	--log-warn: #d7ba7d;
+	--log-error: #f48771;
+	--scrollbar-thumb: #5a5a5a;
+	--scrollbar-thumb-hover: #6e6e6e;
+	--chart-bg: #1e1e1e;
+	--chart-grid: #444444;
+	--chart-text: #cccccc;
+	--chart-text-dim: #a8a8a8;
+	--rank-dapil-bg: #1f3a57;
+	--rank-kab-bg: #2b3a47;
+	--rank-sel-bg: #5a4d12;
+	--font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+
+/* Light theme for people whose Mac/iPad is set to light mode. */
+@media (prefers-color-scheme: light) {
+	:root {
+		color-scheme: light;
+		--bg: #f3f3f3;
+		--panel-bg: #ffffff;
+		--sidebar-bg: #f7f7f7;
+		--border: #cfcfcf;
+		--row-border: #e6e6e6;
+		--text: #1f1f1f;
+		--text-dim: #5f5f5f;
+		--tab-bg: #e4e4e4;
+		--tab-active-bg: #ffffff;
+		--input-bg: #ffffff;
+		--row-hover-bg: #eef3f8;
+		--row-total-bg: #e0e0e0;
+		--row-missing-bg: #fde2e1;
+		--row-partial-bg: #fff2cc;
+		--row-nc-bg: #e8e8e8;
+		--row-selected-bg: #cfe6fa;
+		--log-header: #333333;
+		--log-ok: #1a7f37;
+		--log-warn: #9a6700;
+		--log-error: #b00020;
+		--scrollbar-thumb: #b5b5b5;
+		--scrollbar-thumb-hover: #9a9a9a;
+		--chart-bg: #ffffff;
+		--chart-grid: #cfcfcf;
+		--chart-text: #333333;
+		--chart-text-dim: #666666;
+		--rank-dapil-bg: #c5d8f3;
+		--rank-kab-bg: #dde8f7;
+		--rank-sel-bg: #fff2b3;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font);
+	font-size: 13px;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	/* no double-tap-to-zoom, so a double tap can still drill into a row */
+	touch-action: manipulation;
+}
+
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border: 3px solid transparent;
+	background-clip: content-box;
+	border-radius: 7px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-hover);
+	background-clip: content-box;
+}
+
+button,
+select,
+input {
+	font-family: inherit;
+	font-size: inherit;
+}
+
+select {
+	background: var(--input-bg);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 3px;
+	padding: 3px 6px;
+}
+
+button {
+	background: var(--input-bg);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 3px;
+	padding: 4px 10px;
+	cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+	background: var(--row-hover-bg);
+	border-color: var(--accent-hover);
+}
+
+button:disabled {
+	color: var(--text-dim);
+	opacity: 0.55;
+	cursor: default;
+}
+
+button.toggle-active {
+	background: var(--accent);
+	color: #fff;
+	border-color: var(--accent);
+}
+
+.app-shell {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	height: 100dvh; /* iPad Safari: excludes the collapsing toolbar */
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
+}
+
+.tab-bar {
+	display: flex;
+	align-items: stretch;
+	background: var(--tab-bg);
+	flex: none;
+	position: relative;
+}
+
+.tab-strip {
+	display: flex;
+	flex: 1;
+	min-width: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-webkit-overflow-scrolling: touch;
+}
+
+.tab-strip::-webkit-scrollbar {
+	display: none;
+}
+
+.view-menu {
+	flex: none;
+	position: relative;
+	border-left: 1px solid var(--border);
+}
+
+.view-menu summary {
+	list-style: none;
+	cursor: pointer;
+	padding: 8px 14px;
+	color: var(--text-dim);
+	white-space: nowrap;
+	user-select: none;
+	-webkit-user-select: none;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.view-menu summary::-webkit-details-marker {
+	display: none;
+}
+
+.view-menu summary::after {
+	content: " ▾";
+	white-space: pre;
+}
+
+.view-menu[open] summary {
+	background: var(--tab-active-bg);
+	color: var(--text);
+}
+
+.view-menu-pop {
+	position: absolute;
+	right: 0;
+	top: 100%;
+	z-index: 20;
+	min-width: 230px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 6px;
+	background: var(--sidebar-bg);
+	border: 1px solid var(--border);
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.view-menu-pop label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.view-menu-pop label:hover {
+	background: var(--row-hover-bg);
+}
+
+.view-menu-note {
+	padding: 6px 8px 2px;
+	font-size: 11px;
+	color: var(--text-dim);
+	border-top: 1px solid var(--border);
+	margin-top: 4px;
+}
+
+.tab-strip button {
+	border: none;
+	border-radius: 0;
+	background: var(--tab-bg);
+	color: var(--text-dim);
+	padding: 8px 14px;
+	white-space: nowrap;
+}
+
+.tab-strip button.active {
+	background: var(--tab-active-bg);
+	color: var(--text);
+	font-weight: 600;
+	box-shadow: inset 0 -2px 0 var(--accent-hover);
+}
+
+.tab-panel {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.tab-panel-hidden {
+	display: none;
+}
+
+.tab-body {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.controls-bar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px;
+	flex-wrap: wrap;
+	flex: none;
+}
+
+.controls-bar label {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	white-space: nowrap;
+}
+
+.info-line {
+	padding: 0 10px;
+	font-style: italic;
+	color: var(--text-dim);
+	flex: none;
+}
+
+.column-group-bar {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 0 10px 4px;
+	flex-wrap: wrap;
+	flex: none;
+}
+
+.body-split {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	padding: 4px 10px 10px;
+	gap: 5px;
+}
+
+.table-pane {
+	flex: 1;
+	min-width: 0;
+	border: 1px solid var(--border);
+	background: var(--panel-bg);
+	overflow: auto;
+}
+
+.sidebar-pane {
+	flex: none;
+	width: 360px;
+	min-width: 360px;
+	border: 1px solid var(--border);
+	background: var(--sidebar-bg);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.data-table {
+	border-collapse: collapse;
+	width: 100%;
+	white-space: nowrap;
+}
+
+.data-table thead th {
+	position: sticky;
+	top: 0;
+	background: var(--tab-bg);
+	color: var(--text);
+	border-bottom: 1px solid var(--border);
+	padding: 5px 8px;
+	text-align: left;
+	cursor: pointer;
+	user-select: none;
+	font-weight: 600;
+}
+
+.data-table th.num,
+.data-table td.num {
+	text-align: right;
+}
+
+.data-table td {
+	padding: 3px 8px;
+	border-bottom: 1px solid var(--row-border);
+}
+
+.data-table tbody tr:hover {
+	background: var(--row-hover-bg);
+}
+
+.data-table tr.row-selected {
+	background: var(--row-selected-bg) !important;
+}
+
+.data-table tr.row-total td {
+	background: var(--row-total-bg);
+	font-weight: 700;
+}
+
+.data-table tr.row-missing td {
+	background: var(--row-missing-bg);
+}
+
+.data-table tr.row-partial td {
+	background: var(--row-partial-bg);
+}
+
+.data-table tr.row-nc td {
+	background: var(--row-nc-bg);
+}
+
+.sidebar-section {
+	padding: 6px;
+}
+
+.sidebar-section h3 {
+	margin: 0 0 4px;
+	font-size: 13px;
+}
+
+.panel-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px;
+}
+
+.panel-header h3 {
+	margin: 0 0 4px;
+	font-size: 13px;
+}
+
+.panel-close {
+	border: none;
+	background: transparent;
+	padding: 0 4px;
+	line-height: 1;
+	font-size: 15px;
+	color: var(--text-dim);
+	border-radius: 3px;
+}
+
+.panel-close:hover {
+	background: var(--row-hover-bg);
+	color: var(--text);
+}
+
+.sidebar-scroll {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	padding: 0 6px;
+}
+
+.summary-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+}
+
+.summary-table td {
+	padding: 2px 4px;
+	border-bottom: 1px solid var(--row-border);
+}
+
+.arrow-list-wrap {
+	flex: none;
+	max-height: 320px;
+}
+
+.arrow-list {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+}
+
+.arrow-list td {
+	padding: 3px 4px;
+	border-bottom: 1px solid var(--row-border);
+	white-space: nowrap;
+}
+
+.arrow-name {
+	white-space: normal !important;
+	max-width: 120px;
+}
+
+.arrow-glyph {
+	text-align: center;
+	font-weight: 700;
+}
+
+.arrow-glyph.up,
+.arrow-pct.up {
+	color: var(--log-ok);
+}
+
+.arrow-glyph.down,
+.arrow-pct.down {
+	color: var(--log-error);
+}
+
+.arrow-glyph.flat,
+.arrow-pct.flat {
+	color: var(--text-dim);
+}
+
+.log-panel {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	background: var(--panel-bg);
+	font-family: var(--mono);
+	font-size: 11px;
+	padding: 4px 6px;
+	white-space: pre-wrap;
+	word-break: break-word;
+	border-top: 1px solid var(--border);
+	border-bottom: 1px solid var(--border);
+}
+
+.log-line.header {
+	font-weight: 700;
+	color: var(--log-header);
+}
+
+.log-line.ok {
+	color: var(--log-ok);
+}
+
+.log-line.warn {
+	color: var(--log-warn);
+}
+
+.log-line.error {
+	color: var(--log-error);
+}
+
+.log-buttons {
+	display: flex;
+	gap: 6px;
+	padding: 6px;
+	flex: none;
+}
+
+.loading-screen {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	font-size: 16px;
+	color: var(--text-dim);
+}
+
+.error-screen {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	gap: 8px;
+	color: var(--log-error);
+	padding: 20px;
+	text-align: center;
+}
+
+/* "›" drill-into button at the end of each row (touch screens have no reliable double-click) */
+.data-table th.drill-col,
+.data-table td.drill-col {
+	width: 1%;
+	padding: 0 4px;
+	text-align: center;
+	cursor: default;
+	/* pinned to the right edge so it's reachable without scrolling a wide table sideways */
+	position: sticky;
+	right: 0;
+	background: var(--panel-bg);
+	box-shadow: -1px 0 0 var(--border);
+}
+
+.data-table th.drill-col {
+	background: var(--tab-bg);
+	z-index: 1;
+}
+
+.data-table tbody tr:hover td.drill-col {
+	background: var(--row-hover-bg);
+}
+
+.data-table tr.row-selected td.drill-col {
+	background: var(--row-selected-bg);
+}
+
+.drill-btn {
+	padding: 0 10px;
+	font-size: 16px;
+	line-height: 1.3;
+	border-radius: 12px;
+	color: var(--text-dim);
+	background: transparent;
+	border-color: transparent;
+}
+
+.data-table tr:hover .drill-btn,
+.drill-btn:focus-visible {
+	color: var(--text);
+	background: var(--input-bg);
+	border-color: var(--border);
+}
+
+.sidebar-pane .log-panel {
+	min-height: 120px;
+}
+
+/* ---- Narrow screens (iPad portrait, small windows): sidebar goes under the table ---- */
+@media (max-width: 960px) {
+	.body-split {
+		flex-direction: column;
+	}
+
+	.table-pane {
+		flex: 1 1 55%;
+		min-height: 220px;
+	}
+
+	.sidebar-pane {
+		flex: 1 1 45%;
+		width: auto;
+		min-width: 0;
+		min-height: 200px;
+		overflow: auto;
+	}
+}
+
+/* ---- Touch screens: bigger targets; 16px form fields stop iOS zooming in on focus ---- */
+@media (pointer: coarse) {
+	html,
+	body {
+		font-size: 15px;
+	}
+
+	button,
+	select {
+		min-height: 40px;
+	}
+
+	select {
+		font-size: 16px;
+		padding: 4px 8px;
+	}
+
+	button {
+		padding: 6px 14px;
+	}
+
+	.tab-strip button {
+		padding: 12px 16px;
+	}
+
+	.view-menu summary {
+		padding: 12px 16px;
+	}
+
+	.data-table td {
+		padding: 9px 8px;
+	}
+
+	.data-table thead th {
+		padding: 9px 8px;
+	}
+
+	.drill-btn {
+		min-height: 36px;
+		padding: 0 14px;
+		font-size: 20px;
+		color: var(--text);
+		background: var(--input-bg);
+		border-color: var(--border);
+	}
+
+	.panel-close {
+		min-height: 36px;
+		min-width: 36px;
+		font-size: 20px;
+	}
+
+	.controls-bar {
+		gap: 10px;
+	}
+}
+
+@media (max-width: 600px) {
+	.controls-bar label {
+		white-space: normal;
+	}
+}
